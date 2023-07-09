@@ -8,7 +8,7 @@ Expected State of player:
 score === 0;
 
 
-Describe:  Turn
+Describe: Turn
 Test:  calling this returns an integer between 1 and 6
 Code: 
 ```javascript

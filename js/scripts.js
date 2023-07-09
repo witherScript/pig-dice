@@ -11,7 +11,6 @@ class Turn {
     return Math.floor(Math.random() * 6) + 1;
   }
 }
-
 class Game {
 
   constructor() {
@@ -53,5 +52,10 @@ class Game {
   incrementTurn() {
     this.currentTurn++;
   }
-
 }
+
+/*
+  UI Logic
+*/
+
+
