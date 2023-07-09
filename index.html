@@ -19,15 +19,21 @@
     <h2 id="score-player2"><span id="score"></span></h2>
     <!--or we can do it as the value of a roll by the button-->
     <div class="buttons">
-      <button id="start">Start Game</button>
 
-      <div class="game-start">
+      <button id="start">Start Game</button>
+      <button id="reset">Reset Game</button>
+
+      <div class="hidden" id="game-start">
         <div class="turn">
           <span> <span id="current-player"></span>, your score for this turn is: <span
               id="current-player-score"></span></span><br>
           <button id="roll">Roll</button>
           <button id="hold">Hold</button>
         </div>
+      </div>
+      <div class="win hidden">
+        <h1 id="winner"></h1>
+        <p>Congratulations, you won!</p>
       </div>
       <div id="result" class="hidden">
         <p>

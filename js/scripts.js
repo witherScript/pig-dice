@@ -31,6 +31,7 @@ class Game {
 
     this.currentTurn = 1;
     this.gameOver = false;
+    this.winner = '';
   }
 
   turn(player) {
@@ -47,13 +48,24 @@ class Game {
 
   handleOne(player) {
     player.turn.score = 0;
-    this.incrementTurn();
     delete player.turn;
     this.isWinner(player) ? this.gameOver = true : this.incrementTurn();
   }
 
   isWinner(player) {
-    return player.score >= 100;
+    if (player.score >= 100) {
+      player.winner = true;
+      if (this.currentTurn.toString() === '1') {
+        this.winner = 'Player 1';
+      }
+      else {
+        this.winner = 'Player 2';
+      }
+    }
+    else {
+      return false;
+    }
+    return this.winner;
   }
 
   incrementTurn() {
@@ -80,21 +92,13 @@ class Game {
 */
 
 function populateCurrentScores(game) {
-
-  if (game.currentTurn.toString() === '1') {
-    document.getElementById('current-player').innerText = 'Player 1';
-    document.getElementById('current-player-score').innerText = game.whoseTurn().turn.score;
-
-  }
-  else {
-    document.getElementById('current-player').innerText = 'Player 2';
-    document.getElementById('current-player-score').innerText = game.whoseTurn().turn.score;
-
-  }
-
+  document.getElementById('current-player').innerText = `Player ${game.currentTurn}`;
+  document.getElementById('current-player-score').innerText = game.whoseTurn().turn.score;
 }
 
+
 function unHideElement(element) {
+  console.log(element);
   element.classList.remove('hidden');
   return true;
 }
@@ -104,29 +108,46 @@ function hideElement(element) {
   return true;
 }
 
+function announceWinner(game) {
+  document.getElementById('game-start').classList.add('hidden');
+  document.querySelector('h1#winner').innerText = game.winner;
+}
+
 function handleTurn(game) {
   const currentTurn = game.whoseTurn();
   game.turn(currentTurn);
   const result = currentTurn.turn.roll();
-  if (!currentTurn.turn.turnOver) {
+  if (!currentTurn.turn.turnOver && game.gameOver === false) {
     document.querySelector('span#roll-result').innerText = result;
   }
+  else if (game.gameOver === false) {
+    game.handleOne(currentTurn);
+  }
+  else {
+    announceWinner(game);
+  }
+  populateCurrentScores(game);
 }
 
 function startGame() {
+  hideElement(document.querySelector('button#start'));
+  unHideElement(document.querySelector('button#reset'));
   unHideElement(document.querySelector('div#game-start'));
+
   const game = new Game();
-  populateCurrentScores(game);
 
   const rollBtn = document.querySelector('button#roll');
   const holdBtn = document.querySelector('button#hold');
 
   rollBtn.addEventListener('click', () => handleTurn(game));
-  holdBtn.addEventListener('click', () => game.hold(game.whoseTurn()));
-  // input = button press
-  //attach button press to whoseTurn
+  holdBtn.addEventListener('click', () => {
+    game.hold(game.whoseTurn());
+    populateCurrentScores(game);
+    if (game.gameOver) {
+      announceWinner(game);
+    }
+  });
 }
-
 
 
 window.addEventListener("load", function () {
