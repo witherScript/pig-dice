@@ -7,3 +7,12 @@ Code:
 Expected State of player:
 score === 0;
 
+
+Describe:  Turn
+Test:  calling this returns an integer between 1 and 6
+Code: 
+```javascript
+  const turn = new Turn();
+  turn.roll();
+```
+Expected return value one of [1, 2, 3, 4, 5, 6];

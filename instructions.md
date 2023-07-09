@@ -9,12 +9,12 @@ get Current -> getCurrent % 2 , player1 goes first -> chatGPT
 
 
 What objects will you need?
--> Player (scoreCummulative, name, isWinner)
--> Dice (value, roll)
+-> Player (scoreCummulative, id, isWinner)
 -> Turn 
 (currentScore, 
 players{}, 
 startTurn,
+roll,
 
 //1 -> end turn, no score added to overall endTurn 
 
