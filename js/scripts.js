@@ -1,5 +1,6 @@
 class Player {
   constructor() {
+    this.name = '';
     this.score = 0;
   }
 }
@@ -27,7 +28,9 @@ class Game {
 
   constructor() {
     this.player1 = new Player();
+    this.player1.name = 'player1';
     this.player2 = new Player();
+    this.player2.name = 'player2';
 
     this.currentTurn = 1;
     this.gameOver = false;
@@ -118,8 +121,10 @@ function hideElement(element) {
 }
 
 function announceWinner(game) {
+  unHideElement(document.querySelector('div#win'));
   document.getElementById('game-start').classList.add('hidden');
   document.querySelector('h1#winner').innerText = game.winner;
+
 }
 
 /*
@@ -129,6 +134,8 @@ function announceWinner(game) {
 
 */
 
+
+//roll
 function handleTurn(game) {
   const currentTurn = game.whoseTurn();
 
@@ -143,11 +150,15 @@ function handleTurn(game) {
     unHideElement(document.querySelector('button#hold'));
     document.querySelector('span#roll-result').innerText = result;
     populateCurrentScores(game);
+    unHideElement(document.querySelector('div#result'));
   }
   else if (game.gameOver === false) {
     game.handleOne(currentTurn);
     delete currentTurn.turn; // delete the turn if 1 is rolled
+    //on hold delete hold
     populateCurrentScores(game);
+    let currentPlayer = game.whoseTurn().name; //currentPlayer = player1, score-player1 -> score-player2 ->
+    document.querySelector(`h2#score-${currentPlayer}`).innerHTML = `${currentPlayer}: ` + (game.whoseTurn().score).toString();
   }
   else {
     announceWinner(game);
