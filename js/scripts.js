@@ -40,10 +40,11 @@ class Game {
   }
 
   hold(player) {
-    player.score += player.turn.score;
-    this.isWinner(player);
-    delete player.turn;
-    this.isWinner(player) ? this.gameOver = true : this.incrementTurn();
+    if (player.turn.score !== 0) {
+      player.score += player.turn.score;
+      delete player.turn;
+      this.isWinner(player) ? this.gameOver = true : this.incrementTurn();
+    }
   }
 
   handleOne(player) {
@@ -53,13 +54,15 @@ class Game {
   }
 
   isWinner(player) {
-    if (player.score >= 100) {
+    if (player.score >= 20) {
       player.winner = true;
       if (this.currentTurn.toString() === '1') {
         this.winner = 'Player 1';
+        this.gameOver = true;
       }
       else {
         this.winner = 'Player 2';
+        this.gameOver = true;
       }
     }
     else {
@@ -85,26 +88,32 @@ class Game {
       return this.player1;
     }
   }
+
 }
+
 
 /*
   UI Logic
 */
 
 function populateCurrentScores(game) {
+  const currentPlayer = game.whoseTurn();
   document.getElementById('current-player').innerText = `Player ${game.currentTurn}`;
-  document.getElementById('current-player-score').innerText = game.whoseTurn().turn.score;
+  if (currentPlayer.turn) {
+    document.getElementById('current-player-score').innerText = currentPlayer.turn.score;
+  } else {
+    document.getElementById('current-player-score').innerText = 0;
+  }
 }
 
 
 function unHideElement(element) {
-  console.log(element);
   element.classList.remove('hidden');
   return true;
 }
 
 function hideElement(element) {
-  element.classList.add('hide');
+  element.classList.add('hidden');
   return true;
 }
 
@@ -113,26 +122,48 @@ function announceWinner(game) {
   document.querySelector('h1#winner').innerText = game.winner;
 }
 
+/*
+  1. undefined for hold -> turn.score doesn't exist
+  2. game.turn() -> creates a turn for the current player
+  3. ONLY the roll button is linked to the game.turn() -> handleTurn
+
+*/
+
 function handleTurn(game) {
   const currentTurn = game.whoseTurn();
-  game.turn(currentTurn);
+
+  // Only create a new turn if there isn't one already
+  if (!currentTurn.turn) {
+    game.turn(currentTurn);
+  }
+
   const result = currentTurn.turn.roll();
+
   if (!currentTurn.turn.turnOver && game.gameOver === false) {
+    unHideElement(document.querySelector('button#hold'));
     document.querySelector('span#roll-result').innerText = result;
+    populateCurrentScores(game);
   }
   else if (game.gameOver === false) {
     game.handleOne(currentTurn);
+    delete currentTurn.turn; // delete the turn if 1 is rolled
+    populateCurrentScores(game);
   }
   else {
     announceWinner(game);
   }
-  populateCurrentScores(game);
 }
 
+
+
+
 function startGame() {
+
+  hideElement(document.querySelector('button#hold'));
   hideElement(document.querySelector('button#start'));
-  unHideElement(document.querySelector('button#reset'));
   unHideElement(document.querySelector('div#game-start'));
+
+  document.querySelector('button#start').innerText = 'Reset Game';
 
   const game = new Game();
 
@@ -141,12 +172,16 @@ function startGame() {
 
   rollBtn.addEventListener('click', () => handleTurn(game));
   holdBtn.addEventListener('click', () => {
-    game.hold(game.whoseTurn());
+    const currentTurn = game.whoseTurn();
+    game.turn(currentTurn);
+    game.hold(currentTurn);
     populateCurrentScores(game);
     if (game.gameOver) {
       announceWinner(game);
     }
   });
+
+
 }
 
 

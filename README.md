@@ -16,3 +16,9 @@ Code:
   turn.roll();
 ```
 Expected return value one of [1, 2, 3, 4, 5, 6];
+
+
+## Known Bugs
+When we get to 100, player is not declared as a winner
+
+NOTE: we have set the win value to 20 in dev
