@@ -94,11 +94,9 @@ class Game {
 
 }
 
-
 /*
   UI Logic
 */
-
 function populateCurrentScores(game) {
   const currentPlayer = game.whoseTurn();
   document.getElementById('current-player').innerText = `Player ${game.currentTurn}`;
@@ -108,7 +106,6 @@ function populateCurrentScores(game) {
     document.getElementById('current-player-score').innerText = 0;
   }
 }
-
 
 function unHideElement(element) {
   element.classList.remove('hidden');
@@ -133,7 +130,6 @@ function announceWinner(game) {
   3. ONLY the roll button is linked to the game.turn() -> handleTurn
 
 */
-
 
 //roll
 function handleTurn(game) {
@@ -165,9 +161,6 @@ function handleTurn(game) {
   }
 }
 
-
-
-
 function startGame() {
 
   hideElement(document.querySelector('button#hold'));
@@ -194,7 +187,6 @@ function startGame() {
 
 
 }
-
 
 window.addEventListener("load", function () {
 
