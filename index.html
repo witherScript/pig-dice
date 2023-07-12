@@ -15,25 +15,30 @@
   <div class="game container">
     <h1>Pig Dice</h1>
     <h2 id="turn"><span id="player"></span></h2> <!--Scores for both?-->
-
-    <h2 id="score-player1"><span id="score"></span></h2>
-    <h2 id="score-player2"><span id="score"></span></h2>
+    <div class="scoreboard-container">
+      <div class="float-child">
+        <h2>Player 1 Score: <span id="score-player1"></span></h2>
+      </div>
+      <div class="float-child">
+        <h2>Player 2 Score: <span id="score-player2"></span></span></h2>
+      </div>
+    </div>
 
     <!--or we can do it as the value of a roll by the button-->
+    <br>
+    <br>
+
     <div class="buttons">
-
       <button id="start">Start Game</button>
-
-
       <div class="hidden" id="game-start">
-        <div class="turn">
+        <div class="turn" padding="30px">
           <span> <span id="current-player"></span>, your score for this turn is: <span
               id="current-player-score"></span></span><br>
           <button id="roll">Roll</button>
           <button id="hold">Hold</button>
         </div>
       </div>
-      <div class="win hidden">
+      <div class="hidden" id="win">
         <h1 id="winner"></h1>
         <p>Congratulations, you won!</p>
       </div>
