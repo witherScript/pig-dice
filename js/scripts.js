@@ -4,9 +4,15 @@ class Player {
     this.score = 0;
   }
 }
+
+/*
+ create a box that holds score and whether or not the turn is over
+ inside of that box, include the functionality to roll dice or end the turn
+ if I roll a 1, and functionality to get the score for the current turn
+*/
 class Turn {
   constructor() {
-    this.score = 0;
+    this.score = 0; // score for the current turn
     this.turnOver = false;
   }
   roll() {
@@ -24,6 +30,7 @@ class Turn {
     return this.score;
   }
 }
+
 class Game {
 
   constructor() {
@@ -39,20 +46,22 @@ class Game {
 
   turn(player) {
     player.turn = new Turn();
-    this.isWinner(player);
   }
 
   hold(player) {
-    if (player.turn.score !== 0) {
+    if (player.turn) {
       player.score += player.turn.score;
-      delete player.turn;
+      document.querySelector(`span#score-${player.name}`).innerText = player.score;
       this.isWinner(player) ? this.gameOver = true : this.incrementTurn();
-    }
+      player.turn = null;
+  }
+    
   }
 
   handleOne(player) {
     player.turn.score = 0;
-    delete player.turn;
+    player.turn = null;
+    document.querySelector(`span#score-${player.name}`).innerText = player.score; 
     this.isWinner(player) ? this.gameOver = true : this.incrementTurn();
   }
 
@@ -122,6 +131,10 @@ function announceWinner(game) {
   document.getElementById('game-start').classList.add('hidden');
   document.querySelector('h1#winner').innerText = game.winner;
 
+
+  document.querySelector(`span#score-player1`).innerText = game.player1.score;
+  document.querySelector(`span#score-player2`).innerText = game.player2.score;
+
 }
 
 /*
@@ -132,29 +145,28 @@ function announceWinner(game) {
 */
 
 //roll
+
 function handleTurn(game) {
   const currentTurn = game.whoseTurn();
 
-  // Only create a new turn if there isn't one already
   if (!currentTurn.turn) {
     game.turn(currentTurn);
   }
 
   const result = currentTurn.turn.roll();
 
-  if (!currentTurn.turn.turnOver && game.gameOver === false) {
+  if (!currentTurn.turn.turnOver && !game.gameOver) {
     unHideElement(document.querySelector('button#hold'));
     document.querySelector('span#roll-result').innerText = result;
     populateCurrentScores(game);
     unHideElement(document.querySelector('div#result'));
   }
-  else if (game.gameOver === false) {
+  else if (!game.gameOver) {
     game.handleOne(currentTurn);
-    delete currentTurn.turn; // delete the turn if 1 is rolled
-    //on hold delete hold
     populateCurrentScores(game);
-    let currentPlayer = game.whoseTurn().name; //currentPlayer = player1, score-player1 -> score-player2 ->
-    document.querySelector(`h2#score-${currentPlayer}`).innerHTML = `${currentPlayer}: ` + (game.whoseTurn().score).toString();
+    if (game.gameOver) {
+      announceWinner(game);
+    }
   }
   else {
     announceWinner(game);
@@ -177,15 +189,12 @@ function startGame() {
   rollBtn.addEventListener('click', () => handleTurn(game));
   holdBtn.addEventListener('click', () => {
     const currentTurn = game.whoseTurn();
-    game.turn(currentTurn);
     game.hold(currentTurn);
     populateCurrentScores(game);
     if (game.gameOver) {
       announceWinner(game);
     }
   });
-
-
 }
 
 window.addEventListener("load", function () {
